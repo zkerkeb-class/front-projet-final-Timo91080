@@ -1,0 +1,43 @@
+.article-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #0001;
+  margin: 1.5rem auto;
+  padding: 1.5rem 2rem;
+  max-width: 600px;
+  text-align: left;
+  transition: box-shadow 0.2s;
+}
+.article-card:hover {
+  box-shadow: 0 4px 16px #0002;
+}
+.article-title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+}
+.article-title a {
+  color: #1a237e;
+  text-decoration: none;
+}
+.article-title a:hover {
+  text-decoration: underline;
+}
+.article-meta {
+  color: #888;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+.article-desc {
+  margin: 0.5rem 0 0 0;
+  color: #222;
+}
+
+.article-image-container {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.article-image {
+  max-width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px #0001;
+}
