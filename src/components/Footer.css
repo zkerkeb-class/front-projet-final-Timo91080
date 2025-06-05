@@ -1,0 +1,44 @@
+.footer {
+  width: 100vw;
+  background: #11164e;
+  color: #ffd600;
+  padding: 2rem 0 1rem 0;
+  margin-top: 3rem;
+  box-shadow: 0 -2px 12px #0002;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer-content {
+  width: 90vw;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.footer-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.footer-links {
+  font-size: 1rem;
+  color: #ffd600;
+  opacity: 0.85;
+}
+
+.footer-links a {
+  color: #ffd600;
+  margin: 0 0.5rem;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover {
+  color: #fff;
+}

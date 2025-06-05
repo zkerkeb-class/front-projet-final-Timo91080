@@ -8,11 +8,16 @@ type ArticleProps = {
   source: string
   description: string
   image?: string
+  variant?: "wide" | "compact"
 }
 
-export default function ArticleCard({ title, link, pubDate, source, description, image }: ArticleProps) {
+export default function ArticleCard({ title, link, pubDate, source, description, image, variant}: ArticleProps) {
   return (
-    <div className="article-card">
+    <div className={`article-card ${variant === "wide" ? "article-card-wide" : "article-card-compact"}`}>
+     
+
+      <div className="article-container"> 
+        
       {image && (
         <div className="article-image-container">
           <img src={image} alt={title} className="article-image" />
@@ -25,6 +30,7 @@ export default function ArticleCard({ title, link, pubDate, source, description,
         <span>{source}</span> | <span>{new Date(pubDate).toLocaleDateString()}</span>
       </div>
       <p className="article-desc">{description}</p>
+      </div>
     </div>
   )
 }
