@@ -1,0 +1,151 @@
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: row;
+  background: #101549;
+}
+
+.login-left {
+  flex: 1.2;
+  background: #101549 url('/src/assets/footbaaal.png') no-repeat center center;
+  /* Mets le bon chemin selon où tu places l’image */
+  color: #ffd600;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding-left: 7vw;
+  padding-right: 2vw;
+  min-height: 100vh;
+  position: relative;
+}
+
+.login-left-title {
+  font-size: 2.3rem;
+  font-family: 'Playfair Display', serif;
+  font-weight: bold;
+  margin-bottom: 1.2rem;
+  color: #ffd600;
+  letter-spacing: 1.5px;
+}
+
+.login-left-desc {
+  font-size: 1.1rem;
+   font-weight: bold;
+  color: #ffd600cc;
+  margin-bottom: 2.5rem;
+  max-width: 400px;
+}
+
+.login-left-illu {
+  margin-top: 2rem;
+  width: 320px;
+  max-width: 90%;
+  /* Tu peux mettre une image SVG, PNG ou une illustration ici */
+}
+
+.login-right {
+  flex: 1;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 380px;
+  box-shadow: -2px 0 16px #0001;
+}
+
+.login-form {
+  background: #fff;
+  padding: 2.5rem 2.5rem 2.5rem 2rem;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px #0001;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  min-width: 320px;
+  max-width: 370px;
+  width: 100%;
+  color: #101549;
+}
+
+.login-form h2 {
+  margin: 0 0 1.5rem 0;
+  font-size: 2rem;
+  color: #101549;
+  text-align: left;
+  font-family: 'Playfair Display', serif;
+  letter-spacing: 2px;
+}
+
+.login-form input {
+  padding: 0.8rem 1rem;
+  border: 1px solid #101549;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  background: #f7f7f7;
+  color: #101549;
+  margin-bottom: 0.5rem;
+}
+
+.login-form input::placeholder {
+  color: #10154999;
+  opacity: 1;
+}
+
+.login-form button {
+  background: #ffd600;
+  color: #101549;
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  margin-top: 0.5rem;
+}
+
+.login-form button:hover {
+  background: #101549;
+  color: #ffd600;
+}
+
+.login-error {
+  color: #ffd600;
+  background: #101549;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  text-align: left;
+  margin-bottom: 0.5rem;
+  border: 1px solid #ffd600;
+}
+
+.login-success {
+  color: #228b22;
+  background: #eaffea;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  text-align: left;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 900px) {
+  .login-page {
+    flex-direction: column;
+  }
+  .login-left, .login-right {
+    flex: unset;
+    width: 100%;
+    min-width: unset;
+    padding: 2rem 1rem;
+    box-shadow: none;
+  }
+  .login-form {
+    min-width: unset;
+    max-width: 100%;
+    border-radius: 16px;
+  }
+}
