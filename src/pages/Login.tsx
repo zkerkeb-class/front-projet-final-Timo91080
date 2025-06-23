@@ -71,7 +71,7 @@ export default function Login({ setIsLoggedIn }: LoginProps) {
           <button type="submit">Se connecter</button>
           <p style={{ marginTop: "1rem", textAlign: "center" }}>
             Pas encore de compte ?{" "}
-            <Link to="/register" style={{ color: "#ffd600" }}>
+            <Link to="/register" style={{ color: "#101549" }}>
               Créer un compte
             </Link>
           </p>

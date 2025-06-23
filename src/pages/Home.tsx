@@ -133,6 +133,8 @@ export default function Home({ isLoggedIn, setIsLoggedIn }: HomeProps) {
       isLoggedIn={isLoggedIn}
       favorites={favorites}
       onToggleFavorite={handleToggleFavorite}
+      // Ajoute une prop custom pour cibler le style
+      className="actualite-card"
     />
   ))}
 </div>

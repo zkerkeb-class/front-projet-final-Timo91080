@@ -15,26 +15,35 @@ type ArticleCardProps = ArticleProps & {
   isLoggedIn: boolean;
   favorites: string[];
   onToggleFavorite: (link: string) => void;
+  className?: string; // Ajoute cette ligne
 };
 
-export default function ArticleCard({ title, link, pubDate, source, description, image, variant, isLoggedIn, favorites, onToggleFavorite }: ArticleCardProps) {
+export default function ArticleCard({ title, link, pubDate, source, description, image, variant, isLoggedIn, favorites, onToggleFavorite, className }: ArticleCardProps) {
   const isFavorite = favorites.includes(link);
 
   return (
-    <div className={`article-card ${variant === "wide" ? "article-card-wide" : "article-card-compact"}`}>
+    <div className={`article-card ${variant === "wide" ? "article-card-wide" : "article-card-compact"} ${className || ""}`}>
       {image && (
         <div className="article-image-container">
           <img src={image} alt={title} className="article-image" />
         </div>
       )}
       <div className="article-container"> 
-        <h2 className="article-title">
+        <div className="article-title">
           <a href={link} target="_blank" rel="noopener noreferrer">{title}</a>
-        </h2>
+        </div>
         <div className="article-meta">
           <span>{source}</span> | <span>{new Date(pubDate).toLocaleDateString()}</span>
         </div>
-        <p className="article-desc">{description}</p>
+        <div className="article-desc">{description}</div>
+        <a
+          href={link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="acceder-btn"
+        >
+          Accéder à l'article
+        </a>
       </div>
       {isLoggedIn && (
         <button
@@ -48,5 +57,3 @@ export default function ArticleCard({ title, link, pubDate, source, description,
     </div>
   )
 }
-
-

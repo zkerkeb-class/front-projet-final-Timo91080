@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Caprasimo&family=Libre+Franklin:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 .TopNavbar {
   display: flex;
   flex-direction: row;
@@ -12,10 +14,12 @@
 }
 
 .navbar-titre {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #ffd600;
+font-family: "Bebas Neue", sans-serif;
+
+  
+  font-size: 1.2rem;
+
+  color: #ffffff;
   letter-spacing: 2px;
 }
 
@@ -29,7 +33,7 @@
 
 .navbar-link {
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: #fff;
   font-weight: 500;
   transition: color 0.2s;
@@ -37,7 +41,7 @@
 }
 
 .navbar-link:hover {
-  color: #ffd600;
+  color: #ffffff;
 }
 
 .navbar-link::after {
@@ -45,7 +49,7 @@
   display: block;
   width: 0;
   height: 2px;
-  background: #ffd600;
+  background: #ffffff;
   transition: width 0.3s;
   position: absolute;
   bottom: -4px;
@@ -61,4 +65,18 @@ button{
   border: none;
   font-weight: bold;
  
+}
+
+.logout-icon-btn {
+  background: none;
+  border: none;
+  padding: 0 0.2rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: filter 0.2s;
+}
+
+.logout-icon-btn:hover svg {
+  filter: drop-shadow(0 0 4px #ffd600);
 }

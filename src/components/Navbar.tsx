@@ -27,7 +27,8 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn }: NavbarProps) {
   return (
     <nav className="TopNavbar">
       <div className="navbar-titre">
-        <Link to="/" style={{ color: "#ffd600", textDecoration: "none" }}>Foot-Journal</Link>
+        <Link to="/" style={{ color: "#fff", textDecoration: "none" }}>Foot-Journal</Link>
+        
       </div>
       <div className="navbar-links">
         <Link className="navbar-link" to="/">Accueil</Link>
@@ -36,7 +37,14 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn }: NavbarProps) {
         {isLoggedIn && (
           <>
             <Link className="navbar-link" to="/profil">Mon profil</Link>
-            <button className="navbar-link" onClick={handleLogout}>Déconnexion</button>
+            <button className="navbar-link logout-icon-btn" onClick={handleLogout} title="Déconnexion">
+              {/* Icône SVG de déconnexion */}
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+            </button>
           </>
         )}
       </div>
