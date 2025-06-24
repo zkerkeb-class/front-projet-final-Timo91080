@@ -1,4 +1,5 @@
 import React from 'react'
+import { FaTrash } from "react-icons/fa"; // Ajoute cet import
 import './ArticleCard.css'
 
 type ArticleProps = {
@@ -16,9 +17,10 @@ type ArticleCardProps = ArticleProps & {
   favorites: string[];
   onToggleFavorite: (link: string) => void;
   className?: string; // Ajoute cette ligne
+  icon?: React.ReactNode; // Ajouté pour le nouvel icône
 };
 
-export default function ArticleCard({ title, link, pubDate, source, description, image, variant, isLoggedIn, favorites, onToggleFavorite, className }: ArticleCardProps) {
+export default function ArticleCard({ title, link, pubDate, source, description, image, variant, isLoggedIn, favorites, onToggleFavorite, className, icon }: ArticleCardProps) {
   const isFavorite = favorites.includes(link);
 
   return (
@@ -45,13 +47,17 @@ export default function ArticleCard({ title, link, pubDate, source, description,
           Accéder à l'article
         </a>
       </div>
-      {isLoggedIn && (
+      {isLoggedIn && icon && (
         <button
-          className={`fav-btn${isFavorite ? " active" : ""}`}
+          className="fav-btn"
+          title={
+            React.isValidElement(icon) && icon.type === FaTrash
+              ? "Retirer des favoris"
+              : "Ajouter/Retirer des favoris"
+          }
           onClick={() => onToggleFavorite(link)}
-          title={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
         >
-          {isFavorite ? "★" : "☆"}
+          {icon}
         </button>
       )}
     </div>

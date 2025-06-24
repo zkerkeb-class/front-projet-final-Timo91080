@@ -2,8 +2,10 @@
 
 body {
   margin: 0;
+  margin-left: 3%;
+  margin-right: 3%;
   padding: 0;
-  background: #fff;
+    background: #f4f4f4;
   font-family: 'Inter', Arial, sans-serif;
   color: #111;
   font-size: 14px;
@@ -16,4 +18,84 @@ a {
 
 * {
   box-sizing: border-box;
+}
+
+body.dark-theme {
+  background: #181c2a;
+  color: #f4f4f4;
+}
+
+body.dark-theme .Home,
+body.dark-theme .profil-fullpage,
+body.dark-theme .favoris-page {
+  background: #181c2a;
+  color: #f4f4f4;
+}
+
+body.dark-theme .TopNavbar,
+body.dark-theme .sub-navbar {
+  background: #23284a;
+  color: #fff;
+}
+
+body.dark-theme .profil-section,
+body.dark-theme .article-card,
+body.dark-theme .article-card-wide,
+body.dark-theme .article-card-compact {
+  background: #23284a;
+  color: #f4f4f4;
+  box-shadow: 0 2px 12px #0008;
+}
+
+body.dark-theme .section-title,
+body.dark-theme .Actutitre {
+  color: #ffffff;
+}
+
+body.dark-theme .cat-btn {
+  background: #23284a;
+  color: #ffffff;
+  border-color: #ffffff;
+}
+body.dark-theme .cat-btn.active,
+body.dark-theme .cat-btn:hover {
+  background: #ffffff;
+  color: #23284a;
+}
+
+body.dark-theme .login-section,
+body.dark-theme .ActuDesc {
+  background: #23284a;
+  color: #ffffff;
+}
+
+body.dark-theme .profil-modal {
+  background: #23284a;
+  color: #ffffff;
+}
+
+body.dark-theme .favoris-modal {
+  background: #23284a;
+  color: #ffffff;
+}
+
+body.dark-theme .footer {
+  background: #23284a;
+  color: #ffffff;
+}
+
+body.dark-theme input,
+body.dark-theme textarea {
+  background: #23284a;
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+body.dark-theme .fav-btn {
+  color: #ffffff;
+}
+
+body.dark-theme .article-desc{
+
+  color: white;
 }

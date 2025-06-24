@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "./Profil.css";
 import Navbar from "../components/Navbar";
 
@@ -150,7 +150,7 @@ export default function Profil() {
         </div>
         <div className="profil-header-info">
           <h1>{user?.username}</h1>
-          <div className="profil-email">{user?.email}</div>
+          {/* Email retiré */}
           {user?.createdAt && (
             <div className="profil-date">Membre depuis le {new Date(user.createdAt).toLocaleDateString()}</div>
           )}
@@ -162,7 +162,12 @@ export default function Profil() {
           <h2>Mes informations</h2>
           <ul>
             <li><strong>Nom d'utilisateur :</strong> {user?.username}</li>
-            <li><strong>Email :</strong> {user?.email}</li>
+            <li>
+              <strong>Favoris :</strong>{" "}
+              <Link to="/favoris" style={{ color: "#101549", fontWeight: "bold", textDecoration: "underline" }}>
+                Accéder à mes favoris
+              </Link>
+            </li>
             {user?.createdAt && (
               <li><strong>Date d'inscription :</strong> {new Date(user.createdAt).toLocaleDateString()}</li>
             )}
@@ -173,7 +178,7 @@ export default function Profil() {
           <h2>Modifier mes informations</h2>
           <form onSubmit={handleProfileUpdate}>
             <div className="profil-form-group">
-              <label htmlFor="username">Nom d'utilisateur</label>
+              <label htmlFor="username">Nom d'utilisateur:</label>
               <input
                 type="text"
                 id="username"
@@ -182,16 +187,7 @@ export default function Profil() {
                 placeholder="Nouveau nom d'utilisateur"
               />
             </div>
-            <div className="profil-form-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                value={editEmail}
-                onChange={e => setEditEmail(e.target.value)}
-                placeholder="Nouvel email"
-              />
-            </div>
+            {/* Champ email retiré */}
             <button type="submit" className="profil-btn">
               Mettre à jour
             </button>
@@ -202,7 +198,7 @@ export default function Profil() {
           <h2>Modifier mon mot de passe</h2>
           <form onSubmit={handlePasswordUpdate}>
             <div className="profil-form-group">
-              <label htmlFor="password">Nouveau mot de passe</label>
+              <label htmlFor="password">Nouveau mot de passe:</label>
               <input
                 type="password"
                 id="password"
@@ -224,33 +220,7 @@ export default function Profil() {
           </button>
         </div>
 
-        <div className="profil-section">
-          <h2>Mes favoris</h2>
-          {favorites.length === 0 ? (
-            <div>Aucun article en favori.</div>
-          ) : (
-            <ul>
-              {favorites.map(link => {
-                const article = articles.find(a => a.link === link);
-                return (
-                  <li key={link}>
-                    {article ? (
-                      <a href={link} target="_blank" rel="noopener noreferrer">
-                        {article.title}
-                      </a>
-                    ) : (
-                      <a href={link} target="_blank" rel="noopener noreferrer">
-                        {link}
-                      </a>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-        </div>
-
-   
+        {/* Section favoris retirée */}
 
         {/* Tu peux ajouter ici d'autres sections : commentaires, etc. */}
       </div>

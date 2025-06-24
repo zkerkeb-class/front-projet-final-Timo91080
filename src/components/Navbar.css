@@ -11,6 +11,7 @@
   position: sticky;
   top: 0;
   z-index: 10;
+   border-radius: 8px 8px 0 0;
 }
 
 .navbar-titre {
@@ -79,4 +80,43 @@ button{
 
 .logout-icon-btn:hover svg {
   filter: drop-shadow(0 0 4px #ffd600);
+}
+
+.profil-modal {
+  position: absolute;
+  top: 120%;
+  right: 0;
+  background: #fff;
+  color: #101549;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px #10154922;
+  min-width: 140px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 0;
+  animation: fadeIn 0.2s;
+  
+}
+
+.profil-modal-btn {
+  background: none;
+  border: none;
+  color: #101549;
+  font-size: 1rem;
+  padding: 0.7rem 1.2rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  border-radius: 8px;
+}
+
+.profil-modal-btn:hover {
+  background: #101549;
+  color: #ffffff;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px);}
+  to { opacity: 1; transform: translateY(0);}
 }

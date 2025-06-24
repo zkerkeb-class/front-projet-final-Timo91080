@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate } from "react-router-dom";
+import { FaMoon, FaSun, FaUser, FaHome } from "react-icons/fa";
 import './Navbar.css'
 
 // Déclare le type des props
@@ -10,6 +11,27 @@ type NavbarProps = {
 
 export default function Navbar({ isLoggedIn, setIsLoggedIn }: NavbarProps) {
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "light");
+
+  // Fermer le modal si on clique en dehors
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        setShowModal(false);
+      }
+    }
+    if (showModal) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showModal]);
+
+  useEffect(() => {
+    document.body.classList.toggle("dark-theme", theme === "dark");
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
   const handleLogout = async () => {
     // Optionnel : récupère l'email de l'utilisateur connecté (si tu l'as stocké)
@@ -31,12 +53,43 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn }: NavbarProps) {
         
       </div>
       <div className="navbar-links">
-        <Link className="navbar-link" to="/">Accueil</Link>
+        <Link className="navbar-link" to="/">
+          <FaHome style={{ marginRight: 6, verticalAlign: "middle" }} />
+   
+        </Link>
 
-        {/* Ajoute d'autres liens ici si besoin */}
         {isLoggedIn && (
           <>
-            <Link className="navbar-link" to="/profil">Mon profil</Link>
+            <span
+              className="navbar-link"
+              style={{ position: "relative" }}
+              onClick={() => setShowModal(v => !v)}
+            >
+              <FaUser style={{ marginRight: 6, verticalAlign: "middle" }} />
+            
+              {showModal && (
+                <div ref={modalRef} className="profil-modal">
+                  <button
+                    className="profil-modal-btn"
+                    onClick={() => {
+                      setShowModal(false);
+                      navigate("/profil");
+                    }}
+                  >
+                    Profil
+                  </button>
+                  <button
+                    className="profil-modal-btn"
+                    onClick={() => {
+                      setShowModal(false);
+                      navigate("/favoris");
+                    }}
+                  >
+                    Favoris
+                  </button>
+                </div>
+              )}
+            </span>
             <button className="navbar-link logout-icon-btn" onClick={handleLogout} title="Déconnexion">
               {/* Icône SVG de déconnexion */}
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -47,6 +100,13 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn }: NavbarProps) {
             </button>
           </>
         )}
+        <button
+          className="navbar-link"
+          title={theme === "dark" ? "Passer en mode clair" : "Passer en mode sombre"}
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        >
+          {theme === "dark" ? <FaSun /> : <FaMoon />}
+        </button>
       </div>
     </nav>
   );

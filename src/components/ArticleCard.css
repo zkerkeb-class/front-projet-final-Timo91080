@@ -3,11 +3,11 @@
   flex-direction: column;
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 2px 12px #0001;
+  box-shadow: 0 1px 12px #0001;
   margin: 0;
 
   transition: box-shadow 0.2s;
-  border-left: 6px solid #ffd600;
+  border-left: 1px solid #e7e7e9;
 }
 
 
@@ -17,6 +17,7 @@
   max-width: 1200px;
   min-width: 320px;
   margin-bottom: 2rem;
+  
 }
 
 
@@ -31,8 +32,8 @@
   background: #fff;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 12px #0001;
-  border-left: 6px solid #e7e7e9;
+  box-shadow: 0 1px 4px #0001;
+  border-left: 1px solid #e7e7e9;
   padding: 0;
 }
 
@@ -74,8 +75,8 @@
   background: #fff;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 12px #0001;
-  border-left: 6px solid #e7e7e9;
+ box-shadow: 0 1px 4px #0001;
+  border-left: 1px solid #e7e7e9;
   padding: 0;
 }
 
@@ -158,23 +159,28 @@ font-size: 13px;
 }
 
 .fav-btn {
-
   background: none;
   border: none;
-  font-size: 2.5rem;
-  color: #ffbb00;
+  font-size: 2rem;              /* plus petit */
+  color: #b7b1b1;               /* gris doux, moins saturé */
   cursor: pointer;
   margin-left: 0.5rem;
-  transition: color 0.2s;
-  width: 20%;
+  transition: color 0.2s, filter 0.2s;
   margin: auto;
+  opacity: 0.7;                 /* moins visible */
+  filter: grayscale(0.5);       /* effet désaturé */
 }
 
-
-
-
 .fav-btn.active {
-  color: #101549;
+  color: #ffd600;               /* jaune doux pour l'étoile active */
+  opacity: 0.85;
+  filter: none;
+}
+
+.fav-btn:hover {
+  color: #ffd600;
+  opacity: 1;
+  filter: none;
 }
 
 .article-card-compact.actualite-card .fav-btn {
@@ -186,6 +192,8 @@ font-size: 13px;
   width: auto;
   display: block;
 }
+
+
 
 .article-card-compact .acceder-btn {
   display: inline-block;
@@ -214,12 +222,21 @@ font-size: 13px;
   transition: background 0.2s, color 0.2s;
   font-size: 0.6rem;
   box-shadow: 0 2px 8px #0001;
-  width: 18%;
+  width: 20%;
 }
 
 .acceder-btn:hover {
   background: #dededc;
   color: #000000;
+}
+
+.fav-btn .fav-star {
+  color: #ffd600;
+  font-size: 1.5rem;
+}
+.fav-btn .fa-trash {
+  color: #b7b1b1;
+  font-size: 1.5rem;
 }
 
 @media (max-width: 900px) {

@@ -213,7 +213,8 @@ margin-right: 9%;
 .sub-navbar {
   width: 100%;
   background: #101549;
-  box-shadow: 0 2px 8px #0002;
+ box-shadow: 0 1px 4px #0001;
+ border-radius: 0 0 8px 8px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -234,4 +235,103 @@ margin-right: 9%;
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
+}
+
+.carousel-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 3rem;
+  min-height: 650px;
+}
+
+.carousel-slide {
+  width: 480px;
+  min-height: 620px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.5s cubic-bezier(.4,2,.6,1);
+}
+
+.carousel-arrow {
+  background: #101549;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px #10154922;
+  transition: background 0.2s, color 0.2s, transform 0.15s;
+  z-index: 2;
+  margin: 0 1.2rem;
+  opacity: 0.85;
+}
+.carousel-arrow:hover {
+  background: #ffd600;
+  color: #101549;
+  transform: scale(1.1);
+}
+
+.carousel-arrow.left {
+  left: 0;
+}
+.carousel-arrow.right {
+  right: 0;
+}
+
+.carousel-slide-multi {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  width: 100%;
+  transition: all 0.5s cubic-bezier(.4,2,.6,1);
+}
+
+.article-card-compact.carousel-center {
+  filter: none;
+  opacity: 1;
+  transform: scale(1.06);
+  z-index: 2;
+  box-shadow: 0 8px 32px #10154922;
+  border: 2px solid #101549;
+  transition: all 0.3s;
+}
+
+.article-card-compact.carousel-side {
+  filter: grayscale(0.7) blur(1px) brightness(0.93);
+  opacity: 0.6;
+  transform: scale(0.93);
+  z-index: 1;
+  border: 2px solid transparent;
+  transition: all 0.3s;
+  pointer-events: none;
+}
+
+@media (max-width: 600px) {
+  .carousel-slide {
+    width: 98vw;
+    min-height: 420px;
+  }
+  .carousel-container {
+    min-height: 420px;
+  }
+}
+@media (max-width: 900px) {
+  .carousel-slide-multi {
+    gap: 0.5rem;
+  }
+  .article-card-compact {
+    width: 90vw;
+    min-width: 90vw;
+    max-width: 95vw;
+    height: 420px;
+  }
 }
