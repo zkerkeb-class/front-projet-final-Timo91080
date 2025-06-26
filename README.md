@@ -1,3 +1,8 @@
+
+# Nom, Prénom
+
+Dikete Timothée
+
 # Foot-Journal ⚽
 
 Site d'actualités football moderne avec authentification utilisateur, gestion des favoris et internationalisation complète.
