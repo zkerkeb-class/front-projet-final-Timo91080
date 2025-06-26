@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaSignInAlt, FaSearch, FaStar, FaRegStar, FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { useTranslation } from 'react-i18next';
+import { useAuth } from '../contexts/AuthContext';
+import { useFavorites } from '../hooks/useFavorites';
+import { useNotification } from '../hooks/useNotification';
 import Navbar from "../components/Navbar";
 import ArticleCard from "../components/ArticleCard";
 import "./Home.css";
@@ -17,45 +21,34 @@ type Article = {
   category: string;
 };
 
-type HomeProps = {
-  isLoggedIn: boolean;
-  setIsLoggedIn: (value: boolean) => void;
-  favorites: string[];
-  setFavorites: (fav: string[]) => void;
-};
-
-export default function Home({
-  isLoggedIn,
-  setIsLoggedIn,
-  favorites,
-  setFavorites
-}: HomeProps) {
+export default function Home() {
+  const { t, i18n } = useTranslation();
+  const { isLoggedIn } = useAuth();
+  const { favorites, toggleFavorite } = useFavorites();
+  const { success, error } = useNotification();
+  
   const [articles, setArticles] = useState<Article[]>([]);
   const [search, setSearch] = useState("");
-  const [selectedCat, setSelectedCat] = useState("Tous");
-  const [notif, setNotif] = useState<string | null>(null);
+  const [selectedCat, setSelectedCat] = useState(t('categories.all'));
   const [carouselIndex, setCarouselIndex] = useState(0);
   const navigate = useNavigate();
 
+  // MODIFIÉ : Ajouter la langue dans la requête
   useEffect(() => {
-    fetch("http://localhost:3000/api/articles/mock")
+    const currentLang = i18n.language;
+    fetch(`http://localhost:3000/api/auth/articles/mock?lang=${currentLang}`)
       .then(res => res.json())
-      .then(data => setArticles(data));
-  }, []);
+      .then(data => setArticles(data))
+      .catch(err => console.error("Erreur lors du chargement des articles:", err));
+  }, [i18n.language]); // Recharger quand la langue change
 
+  // Mettre à jour la catégorie sélectionnée quand la langue change
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (isLoggedIn && token) {
-      fetch("http://localhost:3000/api/auth/me", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-        .then(res => res.json())
-        .then(data => setFavorites(data.favorites || []));
-    }
-  }, [isLoggedIn, setFavorites]);
+    setSelectedCat(t('categories.all'));
+  }, [t]);
 
   const filteredArticles = articles.filter(article =>
-    (selectedCat === "Tous" || article.category === selectedCat) &&
+    (selectedCat === t('categories.all') || article.category === selectedCat) &&
     (article.title.toLowerCase().includes(search.toLowerCase()) ||
       article.description.toLowerCase().includes(search.toLowerCase()))
   );
@@ -63,25 +56,20 @@ export default function Home({
   const columnArticles = filteredArticles.slice(0, 3);
   const rowArticles = filteredArticles.slice(3);
 
-  const categories = ["Tous", "Ligue 1", "Mercato", "International"];
+  const categories = [
+    t('categories.all'),
+    t('categories.ligue1'),
+    t('categories.mercato'), 
+    t('categories.international')
+  ];
 
   const handleToggleFavorite = async (link: string) => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-    const isFav = favorites.includes(link);
-    const url = `http://localhost:3000/api/auth/favorites/${isFav ? "remove" : "add"}`;
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ articleLink: link }),
-    });
-    const data = await res.json();
-    setFavorites(data.favorites || []);
-    setNotif(isFav ? "Article retiré des favoris !" : "Article ajouté aux favoris !");
-    setTimeout(() => setNotif(null), 2500);
+    try {
+      const message = await toggleFavorite(link);
+      success(message);
+    } catch (err) {
+      error(err instanceof Error ? err.message : 'Erreur');
+    }
   };
 
   // Carrousel automatique
@@ -100,7 +88,6 @@ export default function Home({
     setCarouselIndex((prev) => (prev + 1) % rowArticles.length);
   };
 
-  // Pour afficher 3 articles centrés sur carouselIndex
   const getCarouselArticles = () => {
     if (rowArticles.length === 0) return [];
     const result = [];
@@ -111,38 +98,15 @@ export default function Home({
     return result;
   };
 
-  // Masquer le carrousel si recherche ou filtre actif
-  const isFiltering = search.trim().length > 0 || selectedCat !== "Tous";
+  const isFiltering = search.trim().length > 0 || selectedCat !== t('categories.all');
 
   return (
     <div>
-      <div className="Home">
-        <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-
-        {/* Notification */}
-        {notif && (
-          <div
-            style={{
-              position: "fixed",
-              top: 24,
-              right: 24,
-              background: "#101549",
-              color: "#fff",
-              padding: "1rem 2rem",
-              borderRadius: 12,
-              boxShadow: "0 2px 12px #0005",
-              zIndex: 9999,
-              fontWeight: "bold",
-              fontSize: "1rem",
-              letterSpacing: "1px",
-            }}
-          >
-            {notif}
-          </div>
-        )}
+      <div className="Home animate-fade-in">
+        <Navbar />
 
         <div className='Actufoot'>
-          <div className="Actutitre">Tout sur le foot</div>
+          <div className="Actutitre">{t('home.title')}</div>
         </div>
 
         <div className="sub-navbar">
@@ -160,7 +124,7 @@ export default function Home({
             />
             <input
               type="text"
-              placeholder="Rechercher un article..."
+              placeholder={t('home.search_placeholder')}
               value={search}
               onChange={e => setSearch(e.target.value)}
               style={{ paddingLeft: 32 }}
@@ -182,33 +146,30 @@ export default function Home({
         <div className="login-section">
           {isLoggedIn ? (
             <span className="login-text">
-              Bienvenue sur FootActu ! Tu peux maintenant commenter, sauvegarder tes articles et profiter de toutes les fonctionnalités.
+              {t('home.welcome_text')}
             </span>
           ) : (
             <>
               <span className="login-text">
-                Connecte-toi pour commenter, sauvegarder tes articles et profiter de toutes les fonctionnalités !
+                {t('home.login_text')}
               </span>
-              {!isLoggedIn && (
-                <button className="login-btn" onClick={() => navigate("/login")}>
-                  <FaSignInAlt style={{ marginRight: 8, verticalAlign: "middle" }} />
-                  Se connecter
-                </button>
-              )}
+              <button className="login-btn hover-scale" onClick={() => navigate("/login")}>
+                <FaSignInAlt style={{ marginRight: 8, verticalAlign: "middle" }} />
+                {t('navbar.login')}
+              </button>
             </>
           )}
         </div>
 
-        {/* Actualités (carrousel) MASQUÉ si recherche ou filtre */}
         {!isFiltering && (
           <>
-            <h2 className="section-title">Actualités</h2>
+            <h2 className="section-title">{t('home.news')}</h2>
             <div className="carousel-container">
-              <button className="carousel-arrow left" onClick={handlePrev}>
+              <button className="carousel-arrow left hover-scale" onClick={handlePrev}>
                 <FaArrowLeft />
               </button>
               <div className="carousel-slide-multi">
-                {getCarouselArticles().map((article, idx) => (
+                {getCarouselArticles().map((article) => (
                   <ArticleCard
                     key={article.link}
                     {...article}
@@ -216,12 +177,12 @@ export default function Home({
                     isLoggedIn={isLoggedIn}
                     favorites={favorites}
                     onToggleFavorite={handleToggleFavorite}
-                    className={`actualite-card ${article.isCenter ? "carousel-center" : "carousel-side"}`}
+                    className={`actualite-card card-entrance ${article.isCenter ? "carousel-center" : "carousel-side"}`}
                     icon={favorites.includes(article.link) ? <FaStar className="fav-star" /> : <FaRegStar className="fav-star" />}
                   />
                 ))}
               </div>
-              <button className="carousel-arrow right" onClick={handleNext}>
+              <button className="carousel-arrow right hover-scale" onClick={handleNext}>
                 <FaArrowRight />
               </button>
             </div>
@@ -229,12 +190,12 @@ export default function Home({
         )}
 
         <div className="ActuDesc">
-          <div className="desc">Retrouvez les dernières actualités du football, les résultats des matchs, les classements et bien plus encore.</div>
+          <div className="desc">{t('home.description')}</div>
         </div>
 
-        <h2 className="section-title">À la une</h2>
+        <h2 className="section-title">{t('home.featured')}</h2>
         <div className="articles-column">
-          {columnArticles.map(article => (
+          {columnArticles.map((article, index) => (
             <ArticleCard
               key={article.link}
               {...article}
@@ -242,6 +203,8 @@ export default function Home({
               isLoggedIn={isLoggedIn}
               favorites={favorites}
               onToggleFavorite={handleToggleFavorite}
+              className={`card-entrance hover-lift`}
+              style={{ animationDelay: `${index * 0.1}s` } as React.CSSProperties}
               icon={favorites.includes(article.link) ? <FaStar className="fav-star" /> : <FaRegStar className="fav-star" />}
             />
           ))}

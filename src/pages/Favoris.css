@@ -4,26 +4,37 @@
   padding: 2rem 0 4rem 0;
 }
 
+.favoris-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
 .favoris-title {
   text-align: center;
   font-family: "Bebas Neue", sans-serif;
   font-size: 2.2rem;
   color: #101549;
   letter-spacing: 2px;
-  margin-bottom: 2.5rem;
+  margin-bottom: 1rem;
   margin-top: 1rem;
   text-shadow: 0 2px 8px #0001;
 }
 
-.favoris-list {
-  display: flex;
-  flex-direction: column;
-  gap: 2.5rem;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
+.favoris-subtitle {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 0;
+}
+
+.favoris-content {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* AJOUTÉ : Grille pour afficher les favoris en lignes */
+.favoris-grid {
+
 }
 
 .favoris-loading,
@@ -40,6 +51,10 @@
   max-width: 500px;
   margin-left: auto;
   margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
 }
 
 .border-bottom {
@@ -47,68 +62,162 @@
   margin-bottom: 2%;
 }
 
-.fav-btn {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  color: #b7b1b1;
-  cursor: pointer;
-  margin-left: 0.5rem;
-  transition: color 0.2s;
-  opacity: 0.7;
-}
-.fav-btn:hover {
-  color: #b71c1c;
-  opacity: 1;
+/* Styles pour l'icône poubelle */
+.trash-icon {
+  color: #b71c1c !important;
+  font-size: 1.4rem !important;
+  transition: all 0.3s ease;
 }
 
-.favoris-modal-bg {
+.trash-icon:hover {
+  color: #8b0000 !important;
+  transform: scale(1.1);
+}
+
+/* Overlay pour le modal */
+.favoris-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: #10154955;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9998;
 }
 
+/* Modal de confirmation */
 .favoris-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 4px 32px #10154933;
-  padding: 2rem 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  padding: 2.5rem;
   text-align: center;
-  min-width: 280px;
+  min-width: 400px;
+  max-width: 90vw;
+  z-index: 9999;
 }
 
-.favoris-modal-actions {
+.modal-content p {
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+  color: #333;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.modal-buttons {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
   justify-content: center;
-  margin-top: 1.2rem;
 }
 
-.favoris-modal-btn {
-  background: #ececec;
-  color: #101549;
+.modal-btn {
   border: none;
-  border-radius: 8px;
-  padding: 0.5rem 1.2rem;
+  border-radius: 10px;
+  padding: 0.8rem 2rem;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition: all 0.3s ease;
+  min-width: 120px;
+  outline: none;
 }
 
-.favoris-modal-btn.danger {
+.modal-btn.confirm {
   background: #b71c1c;
   color: #fff;
 }
 
-.favoris-modal-btn:hover {
-  background: #101549;
-  color: #ffd600;
+.modal-btn.confirm:hover {
+  background: #8b0000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(183, 28, 28, 0.3);
+}
+
+.modal-btn.cancel {
+  background: #f5f5f5;
+  color: #333;
+  border: 2px solid #ddd;
+}
+
+.modal-btn.cancel:hover {
+  background: #e8e8e8;
+  border-color: #bbb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .favoris-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 0 1rem;
+  }
+  
+  .favoris-content {
+    padding: 0 1rem;
+  }
+  
+  .favoris-modal {
+    min-width: 320px;
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .favoris-title {
+    font-size: 1.8rem;
+  }
+  
+  .favoris-grid {
+    gap: 1rem;
+  }
+  
+  .modal-buttons {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  
+  .modal-btn {
+    min-width: 100%;
+  }
+  
+  .favoris-modal {
+    margin: 1rem;
+    min-width: auto;
+    max-width: calc(100vw - 2rem);
+  }
+}
+
+/* Thème sombre */
+body.dark-theme .favoris-modal {
+  background: #0a0c13 !important;
+  color: #f4f4f4 !important;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.8) !important;
+}
+
+body.dark-theme .modal-content p {
+  color: #f4f4f4 !important;
+}
+
+body.dark-theme .modal-btn.cancel {
+  background: #181c2a !important;
+  color: #f4f4f4 !important;
+  border-color: #23284a !important;
+}
+
+body.dark-theme .modal-btn.cancel:hover {
+  background: #23284a !important;
+  border-color: #2d3456 !important;
+}
+
+body.dark-theme .favoris-empty {
+  background: #0a0c13 !important;
+  color: #f4f4f4 !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2) !important;
 }

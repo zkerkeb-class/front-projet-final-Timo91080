@@ -252,6 +252,16 @@
   min-width: 0;
 }
 
+.profil-form-group input.password-mismatch {
+  border-color: #b71c1c !important;
+  background: #fff5f5 !important;
+}
+
+.profil-form-group input.password-match {
+  border-color: #228b22 !important;
+  background: #f0fff0 !important;
+}
+
 .profil-section form {
   display: flex;
   flex-direction: column;

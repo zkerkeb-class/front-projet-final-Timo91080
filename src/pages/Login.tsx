@@ -1,78 +1,94 @@
-import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
+import { useAuth } from '../contexts/AuthContext';
+import { useNotification } from '../hooks/useNotification';
 import "./Login.css";
 
-type LoginProps = {
-  setIsLoggedIn: (value: boolean) => void;
-};
-
-export default function Login({ setIsLoggedIn }: LoginProps) {
+export default function Login() {
+  const { t } = useTranslation();
+  const { login, isLoggedIn } = useAuth();
+  const { success, error } = useNotification();
+  const navigate = useNavigate();
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  // Redirection si déjà connecté
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/");
+    }
+  }, [isLoggedIn, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
     if (!email || !password) {
-      setError("Veuillez remplir tous les champs.");
+      error(t('auth.fill_all_fields') || "Veuillez remplir tous les champs");
       return;
     }
+
+    setLoading(true);
     try {
       const res = await fetch("http://localhost:3000/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
+      
       const data = await res.json();
       if (!res.ok) {
-        setError(data.msg || "Erreur lors de la connexion.");
+        error(data.msg || t('auth.login_error') || "Erreur de connexion");
         return;
       }
-      setSuccess("Connexion réussie !");
-      localStorage.setItem("token", data.token);
-      setIsLoggedIn(true);
-      setTimeout(() => navigate("/"), 1500); // Redirection après 1,5s
-    } catch (err) {
-      setError("Erreur serveur.");
+      
+      login(data.token, data.user);
+      success(t('auth.login_success') || "Connexion réussie !");
+      navigate("/");
+    } catch {
+      error(t('common.server_error') || "Erreur serveur");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="login-page">
-      <div className="login-left">
-        <div className="login-left-title">Bienvenue sur Foot-Journal</div>
+    <div className="login-page animate-fade-in">
+      <div className="login-left animate-slide-in-left">
+        <div className="login-left-title">{t('auth.welcome_title')}</div>
         <div className="login-left-desc">
-          Explore toutes les fonctionnalités de ton journal sportif préféré.
+          {t('auth.welcome_desc')}
           <br />
-          Connecte-toi pour commenter, sauvegarder tes articles et plus encore !
+          {t('home.login_text')}
         </div>
       </div>
-      <div className="login-right">
+      <div className="login-right animate-slide-in-right">
         <form className="login-form" onSubmit={handleSubmit}>
-          <h2>Connexion</h2>
-          {error && <div className="login-error">{error}</div>}
-          {success && <div className="login-success">{success}</div>}
+          <h2>{t('auth.login_title')}</h2>
           <input
             type="email"
-            placeholder="Adresse e-mail"
+            placeholder={t('auth.email')}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            disabled={loading}
+            required
           />
           <input
             type="password"
-            placeholder="Mot de passe"
+            placeholder={t('auth.password')}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            disabled={loading}
+            required
           />
-          <button type="submit">Se connecter</button>
+          <button type="submit" disabled={loading} className="hover-scale">
+            {loading ? t('common.loading') : t('auth.login_button')}
+          </button>
           <p style={{ marginTop: "1rem", textAlign: "center" }}>
-            Pas encore de compte ?{" "}
-            <Link to="/register" style={{ color: "#101549" }}>
-              Créer un compte
+            {t('auth.no_account')}{" "}
+            <Link to="/register" style={{ color: "var(--primary-color)" }}>
+              {t('auth.create_account')}
             </Link>
           </p>
         </form>

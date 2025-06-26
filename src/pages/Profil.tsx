@@ -1,61 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
+import { useAuth } from '../contexts/AuthContext';
+import { useNotification } from '../hooks/useNotification';
 import "./Profil.css";
 import Navbar from "../components/Navbar";
-
-type User = {
-  username: string;
-  email: string;
-  avatar?: string;
-  createdAt?: string;
-};
+import Loader from "../components/Loader";
 
 export default function Profil() {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const { t } = useTranslation();
+  const { user, loading: authLoading } = useAuth();
+  const { success, error: notifyError } = useNotification();
+  
   const [editUsername, setEditUsername] = useState("");
   const [editEmail, setEditEmail] = useState("");
   const [editPassword, setEditPassword] = useState("");
-  const [editSuccess, setEditSuccess] = useState("");
-  const [editError, setEditError] = useState("");
-  const [favorites, setFavorites] = useState<string[]>([]);
-  const [articles, setArticles] = useState<any[]>([]);
+  const [editPasswordConfirm, setEditPasswordConfirm] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Redirection si pas connecté
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
+    if (!authLoading && !user) {
       navigate("/login");
-      return;
     }
-    fetch("http://localhost:3000/api/auth/me", {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.username) {
-          setUser(data);
-          setFavorites(data.favorites || []);
-        } else setError("Impossible de charger le profil.");
-        setLoading(false);
-      })
-      .catch(() => {
-        setError("Erreur serveur.");
-        setLoading(false);
-      });
-  }, [navigate]);
+  }, [user, authLoading, navigate]);
 
-  useEffect(() => {
-    fetch("http://localhost:3000/api/articles/mock")
-      .then(res => res.json())
-      .then(data => setArticles(data));
-  }, []);
-
-  // Pour la suppression du compte (optionnel)
+  // Pour la suppression du compte
   const handleDelete = async () => {
     if (!window.confirm("Supprimer votre compte ? Cette action est irréversible.")) return;
+    
+    setLoading(true);
     const token = localStorage.getItem("token");
     try {
       const res = await fetch("http://localhost:3000/api/auth/delete", {
@@ -64,21 +39,27 @@ export default function Profil() {
       });
       if (res.ok) {
         localStorage.removeItem("token");
-        setSuccess("Compte supprimé.");
+        success("Compte supprimé.");
         setTimeout(() => navigate("/"), 1500);
       } else {
-        setError("Erreur lors de la suppression.");
+        notifyError("Erreur lors de la suppression.");
       }
     } catch {
-      setError("Erreur serveur.");
+      notifyError("Erreur serveur.");
+    } finally {
+      setLoading(false);
     }
   };
 
   // Fonction pour modifier username/email
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    setEditError("");
-    setEditSuccess("");
+    if (!editUsername.trim()) {
+      notifyError("Le nom d'utilisateur ne peut pas être vide.");
+      return;
+    }
+    
+    setLoading(true);
     const token = localStorage.getItem("token");
     try {
       const res = await fetch("http://localhost:3000/api/auth/me", {
@@ -94,23 +75,38 @@ export default function Profil() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setEditError(data.msg || "Erreur lors de la mise à jour.");
+        notifyError(data.msg || "Erreur lors de la mise à jour.");
         return;
       }
-      setEditSuccess("Profil mis à jour !");
-      setUser(data.user);
+      success("Profil mis à jour !");
       setEditUsername("");
       setEditEmail("");
+      // Recharger la page pour mettre à jour le contexte
+      window.location.reload();
     } catch {
-      setEditError("Erreur serveur.");
+      notifyError("Erreur serveur.");
+    } finally {
+      setLoading(false);
     }
   };
 
   // Fonction pour modifier le mot de passe
   const handlePasswordUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    setEditError("");
-    setEditSuccess("");
+    
+    // Vérification que les mots de passe correspondent
+    if (editPassword !== editPasswordConfirm) {
+      notifyError("Les mots de passe ne correspondent pas.");
+      return;
+    }
+    
+    // Vérification de la longueur minimale
+    if (editPassword.length < 6) {
+      notifyError("Le mot de passe doit contenir au moins 6 caractères.");
+      return;
+    }
+    
+    setLoading(true);
     const token = localStorage.getItem("token");
     try {
       const res = await fetch("http://localhost:3000/api/auth/me/password", {
@@ -123,113 +119,132 @@ export default function Profil() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setEditError(data.msg || "Erreur lors de la mise à jour du mot de passe.");
+        notifyError(data.msg || "Erreur lors de la mise à jour du mot de passe.");
         return;
       }
-      setEditSuccess("Mot de passe mis à jour !");
+      success("Mot de passe mis à jour !");
       setEditPassword("");
+      setEditPasswordConfirm("");
     } catch {
-      setEditError("Erreur serveur.");
+      notifyError("Erreur serveur.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (loading) return <div className="profil-fullpage">Chargement...</div>;
+  if (authLoading) return <Loader text="Chargement..." />;
+  if (!user) return null;
 
   return (
-
-  <div> 
-   <Navbar isLoggedIn={!!user} setIsLoggedIn={() => {}} />
-    <div className="profil-fullpage">
-       
-      <div className="profil-header">
-        <div className="profil-avatar">
-          <img
-            src={user?.avatar || "https://ui-avatars.com/api/?name=" + (user?.username || "User") + "&background=ffd600&color=101549&size=256"}
-            alt="avatar"
-          />
-        </div>
-        <div className="profil-header-info">
-          <h1>{user?.username}</h1>
-          {/* Email retiré */}
-          {user?.createdAt && (
-            <div className="profil-date">Membre depuis le {new Date(user.createdAt).toLocaleDateString()}</div>
-          )}
-        </div>
-      </div>
-
-      <div className="profil-content">
-        <div className="profil-section">
-          <h2>Mes informations</h2>
-          <ul>
-            <li><strong>Nom d'utilisateur :</strong> {user?.username}</li>
-            <li>
-              <strong>Favoris :</strong>{" "}
-              <Link to="/favoris" style={{ color: "#101549", fontWeight: "bold", textDecoration: "underline" }}>
-                Accéder à mes favoris
-              </Link>
-            </li>
+    <div className="animate-fade-in"> 
+      <Navbar />
+      <div className="profil-fullpage">
+        <div className="profil-header animate-slide-in-up">
+          <div className="profil-avatar">
+            <img
+              src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.username || "User"}&background=ffd600&color=101549&size=256`}
+              alt="avatar"
+            />
+          </div>
+          <div className="profil-header-info">
+            <h1>{user?.username}</h1>
             {user?.createdAt && (
-              <li><strong>Date d'inscription :</strong> {new Date(user.createdAt).toLocaleDateString()}</li>
+              <div className="profil-date">
+                Membre depuis le {new Date(user.createdAt).toLocaleDateString()}
+              </div>
             )}
-          </ul>
+          </div>
         </div>
 
-        <div className="profil-section">
-          <h2>Modifier mes informations</h2>
-          <form onSubmit={handleProfileUpdate}>
-            <div className="profil-form-group">
-              <label htmlFor="username">Nom d'utilisateur:</label>
-              <input
-                type="text"
-                id="username"
-                value={editUsername}
-                onChange={e => setEditUsername(e.target.value)}
-                placeholder="Nouveau nom d'utilisateur"
-              />
-            </div>
-            {/* Champ email retiré */}
-            <button type="submit" className="profil-btn">
-              Mettre à jour
+        <div className="profil-content">
+          <div className="profil-section animate-slide-in-left">
+            <h2>Mes informations</h2>
+            <ul>
+              <li><strong>Nom d'utilisateur :</strong> {user?.username}</li>
+              <li>
+                <strong>Favoris :</strong>{" "}
+                <Link to="/favoris" style={{ color: "var(--primary-color)", fontWeight: "bold", textDecoration: "underline" }}>
+                  Accéder à mes favoris
+                </Link>
+              </li>
+              {user?.createdAt && (
+                <li><strong>Date d'inscription :</strong> {new Date(user.createdAt).toLocaleDateString()}</li>
+              )}
+            </ul>
+          </div>
+
+          <div className="profil-section animate-slide-in-right">
+            <h2>Modifier mes informations</h2>
+            <form onSubmit={handleProfileUpdate}>
+              <div className="profil-form-group">
+                <label htmlFor="username">Nom d'utilisateur:</label>
+                <input
+                  type="text"
+                  id="username"
+                  value={editUsername}
+                  onChange={e => setEditUsername(e.target.value)}
+                  placeholder="Nouveau nom d'utilisateur"
+                  disabled={loading}
+                />
+              </div>
+              <button type="submit" className="profil-btn hover-scale" disabled={loading}>
+                {loading ? "Chargement..." : "Mettre à jour"}
+              </button>
+            </form>
+          </div>
+
+          <div className="profil-section animate-slide-in-left">
+            <h2>Modifier mon mot de passe</h2>
+            <form onSubmit={handlePasswordUpdate}>
+              <div className="profil-form-group">
+                <label htmlFor="password">Nouveau mot de passe:</label>
+                <input
+                  type="password"
+                  id="password"
+                  value={editPassword}
+                  onChange={e => setEditPassword(e.target.value)}
+                  placeholder="Nouveau mot de passe"
+                  required
+                  disabled={loading}
+                />
+              </div>
+              <div className="profil-form-group">
+                <label htmlFor="passwordConfirm">Confirmer le mot de passe:</label>
+                <input
+                  type="password"
+                  id="passwordConfirm"
+                  value={editPasswordConfirm}
+                  onChange={e => setEditPasswordConfirm(e.target.value)}
+                  placeholder="Confirmer le mot de passe"
+                  className={
+                    editPasswordConfirm.length > 0
+                      ? editPassword === editPasswordConfirm
+                        ? "password-match"
+                        : "password-mismatch"
+                      : ""
+                  }
+                  required
+                  disabled={loading}
+                />
+              </div>
+              <button type="submit" className="profil-btn hover-scale" disabled={loading}>
+                {loading ? "Chargement..." : "Changer le mot de passe"}
+              </button>
+            </form>
+          </div>
+
+          <div className="profil-section animate-slide-in-right">
+            <h2>Mes actions</h2>
+            <button 
+              className="profil-btn danger hover-scale" 
+              onClick={handleDelete}
+              disabled={loading}
+            >
+              {loading ? "Chargement..." : "Supprimer mon compte"}
             </button>
-          </form>
+          </div>
         </div>
-
-        <div className="profil-section">
-          <h2>Modifier mon mot de passe</h2>
-          <form onSubmit={handlePasswordUpdate}>
-            <div className="profil-form-group">
-              <label htmlFor="password">Nouveau mot de passe:</label>
-              <input
-                type="password"
-                id="password"
-                value={editPassword}
-                onChange={e => setEditPassword(e.target.value)}
-                placeholder="Nouveau mot de passe"
-              />
-            </div>
-            <button type="submit" className="profil-btn">
-              Changer le mot de passe
-            </button>
-          </form>
-        </div>
-
-        <div className="profil-section">
-          <h2>Mes actions</h2>
-          <button className="profil-btn danger" onClick={handleDelete}>
-            Supprimer mon compte
-          </button>
-        </div>
-
-        {/* Section favoris retirée */}
-
-        {/* Tu peux ajouter ici d'autres sections : commentaires, etc. */}
       </div>
-
-      {error && <div className="profil-error">{error}</div>}
-      {success && <div className="profil-success">{success}</div>}
-      {editError && <div className="profil-error">{editError}</div>}
-      {editSuccess && <div className="profil-success">{editSuccess}</div>}
-    </div>
     </div>
   );
 }

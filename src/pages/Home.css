@@ -274,7 +274,7 @@ margin-right: 9%;
   opacity: 0.85;
 }
 .carousel-arrow:hover {
-  background: #ffd600;
+  background: #ffffff;
   color: #101549;
   transform: scale(1.1);
 }
@@ -313,6 +313,30 @@ margin-right: 9%;
   border: 2px solid transparent;
   transition: all 0.3s;
   pointer-events: none;
+}
+
+.notification {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  background: #101549;
+  color: #fff;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px #0005;
+  z-index: 9999;
+  font-weight: bold;
+  font-size: 1rem;
+  letter-spacing: 1px;
+  transition: all 0.2s;
+}
+
+/* Mode sombre */
+body.dark-theme .notification {
+  background: #0a0c13;
+  color: #f4f4f4;
+  box-shadow: 0 2px 12px #0008;
+  border: 1px solid #bfc8e6;
 }
 
 @media (max-width: 600px) {
